@@ -1,0 +1,9 @@
+code,httpCode,message,detail,docLink
+0,0,"","",""
+1,0,"Código de erro não encontrado no arquivo de erros da aplicação","",""
+2,0,"Arquivo de erros não encontrado.","",""
+3,0,"O arquivo de erros da aplicação com campo obrigatório ausente.","",""
+4,0,"A requisição solicitada não existe no sistema","",""
+5,0,"Usuário não localizado no LDAP","",""
+6,0,"Erro ao salvar.","",""
+100,0,"CPF inválido - Geral","","https://wiki.udesc.br"

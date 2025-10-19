@@ -1,24 +1,51 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Mock data for construction sites
-const constructions = [
-  { id: 1, name: "Condomínio Residencial Aurora", lat: -23.5505, lng: -46.6333, status: "high" },
-  { id: 2, name: "Edifício Comercial Platina", lat: -25.4284, lng: -49.2733, status: "high" },
-  { id: 3, name: "Shopping Center Norte", lat: -30.0346, lng: -51.2177, status: "medium" },
-  { id: 4, name: "Residencial Parque das Flores", lat: -27.5954, lng: -48.5480, status: "medium" },
-  { id: 5, name: "Galpão Industrial TechPark", lat: -26.9191, lng: -49.0661, status: "low" },
-];
+interface Construction {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  status: "high" | "medium" | "low";
+}
 
 const MapView = () => {
+  const [constructions, setConstructions] = useState<Construction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!mapContainerRef.current) return;
+    fetchConstructions();
+  }, []);
+
+  const fetchConstructions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("constructions")
+        .select("id, name, latitude, longitude, status");
+
+      if (error) throw error;
+      setConstructions((data || []) as Construction[]);
+    } catch (error: any) {
+      toast({
+        title: "Erro ao carregar mapa",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!mapContainerRef.current || loading || constructions.length === 0) return;
 
     // Initialize map
     const map = L.map(mapContainerRef.current).setView([-25.4284, -49.2733], 5);
@@ -69,7 +96,7 @@ const MapView = () => {
         iconAnchor: [16, 32],
       });
 
-      const marker = L.marker([construction.lat, construction.lng], {
+      const marker = L.marker([construction.latitude, construction.longitude], {
         icon: customIcon,
       }).addTo(map);
 
@@ -89,7 +116,7 @@ const MapView = () => {
     return () => {
       map.remove();
     };
-  }, []);
+  }, [constructions, loading]);
 
   return (
     <Card className="shadow-soft">
@@ -100,10 +127,23 @@ const MapView = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div 
-          ref={mapContainerRef} 
-          className="h-[400px] overflow-hidden rounded-lg border border-border"
-        />
+        {loading ? (
+          <div className="h-[400px] flex items-center justify-center">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p className="mt-4 text-sm text-muted-foreground">Carregando mapa...</p>
+            </div>
+          </div>
+        ) : constructions.length === 0 ? (
+          <div className="h-[400px] flex items-center justify-center border border-border rounded-lg">
+            <p className="text-muted-foreground">Nenhuma obra cadastrada para exibir no mapa.</p>
+          </div>
+        ) : (
+          <div 
+            ref={mapContainerRef} 
+            className="h-[400px] overflow-hidden rounded-lg border border-border"
+          />
+        )}
       </CardContent>
     </Card>
   );

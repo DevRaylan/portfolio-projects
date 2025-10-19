@@ -1,101 +1,118 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Calendar, DollarSign } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
-interface Lead {
-  id: number;
+interface Construction {
+  id: string;
   name: string;
-  location: string;
+  city: string;
   status: "high" | "medium" | "low";
-  date: string;
-  value: string;
+  estimated_value: number | null;
+  created_at: string;
 }
 
-const mockLeads: Lead[] = [
-  {
-    id: 1,
-    name: "Condomínio Residencial Aurora",
-    location: "São Paulo, SP",
-    status: "high",
-    date: "15/01/2025",
-    value: "R$ 245.000",
-  },
-  {
-    id: 2,
-    name: "Edifício Comercial Platina",
-    location: "Curitiba, PR",
-    status: "high",
-    date: "12/01/2025",
-    value: "R$ 180.000",
-  },
-  {
-    id: 3,
-    name: "Shopping Center Norte",
-    location: "Porto Alegre, RS",
-    status: "medium",
-    date: "10/01/2025",
-    value: "R$ 425.000",
-  },
-  {
-    id: 4,
-    name: "Residencial Parque das Flores",
-    location: "Florianópolis, SC",
-    status: "medium",
-    date: "08/01/2025",
-    value: "R$ 95.000",
-  },
-  {
-    id: 5,
-    name: "Galpão Industrial TechPark",
-    location: "Blumenau, SC",
-    status: "low",
-    date: "05/01/2025",
-    value: "R$ 62.000",
-  },
-];
-
-const statusConfig = {
-  high: { label: "Alta Prioridade", variant: "default" as const },
-  medium: { label: "Média Prioridade", variant: "secondary" as const },
-  low: { label: "Baixa Prioridade", variant: "outline" as const },
-};
-
 const LeadsTable = () => {
+  const [constructions, setConstructions] = useState<Construction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchConstructions();
+  }, []);
+
+  const fetchConstructions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("constructions")
+        .select("id, name, city, status, estimated_value, created_at")
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      setConstructions((data || []) as Construction[]);
+    } catch (error: any) {
+      toast({
+        title: "Erro ao carregar obras",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getBadgeVariant = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return "success";
+      case "medium":
+        return "warning";
+      case "low":
+        return "info";
+      default:
+        return "default";
+    }
+  };
+
   return (
     <Card className="shadow-soft">
       <CardHeader>
         <CardTitle className="text-2xl">Leads Recentes</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {mockLeads.map((lead) => (
-            <div
-              key={lead.id}
-              className="flex flex-col gap-3 rounded-lg border p-4 transition-colors hover:bg-muted/50 md:flex-row md:items-center md:justify-between"
-            >
-              <div className="flex-1">
-                <h3 className="font-semibold">{lead.name}</h3>
-                <div className="mt-2 flex flex-wrap gap-3 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <MapPin className="h-4 w-4" />
-                    {lead.location}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    {lead.date}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <DollarSign className="h-4 w-4" />
-                    {lead.value}
-                  </div>
-                </div>
-              </div>
-              <Badge variant={statusConfig[lead.status].variant}>
-                {statusConfig[lead.status].label}
-              </Badge>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-sm text-muted-foreground">Carregando obras...</p>
+          </div>
+        ) : constructions.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">Nenhuma obra cadastrada ainda.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="py-3 px-4 text-left text-sm font-semibold">Obra</th>
+                  <th className="py-3 px-4 text-left text-sm font-semibold">Localização</th>
+                  <th className="py-3 px-4 text-left text-sm font-semibold">Data</th>
+                  <th className="py-3 px-4 text-left text-sm font-semibold">Valor Est.</th>
+                  <th className="py-3 px-4 text-left text-sm font-semibold">Prioridade</th>
+                </tr>
+              </thead>
+              <tbody>
+                {constructions.map((construction) => (
+                  <tr key={construction.id} className="border-b last:border-0 hover:bg-muted/50">
+                    <td className="py-3 px-4 font-medium">{construction.name}</td>
+                    <td className="py-3 px-4 text-sm text-muted-foreground">
+                      {construction.city}
+                    </td>
+                    <td className="py-3 px-4 text-sm text-muted-foreground">
+                      {new Date(construction.created_at).toLocaleDateString("pt-BR")}
+                    </td>
+                    <td className="py-3 px-4 text-sm">
+                      {construction.estimated_value
+                        ? `R$ ${construction.estimated_value.toLocaleString("pt-BR")}`
+                        : "-"}
+                    </td>
+                    <td className="py-3 px-4">
+                      <Badge variant={getBadgeVariant(construction.status)}>
+                        {construction.status === "high"
+                          ? "Alta"
+                          : construction.status === "medium"
+                          ? "Média"
+                          : "Baixa"}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

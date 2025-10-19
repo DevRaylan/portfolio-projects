@@ -8,6 +8,7 @@ import StatsCards from "@/components/StatsCards";
 import Filters from "@/components/Filters";
 import LeadsTable from "@/components/LeadsTable";
 import MapView from "@/components/MapView";
+import { AddConstructionDialog } from "@/components/AddConstructionDialog";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -57,7 +58,10 @@ const Index = () => {
       <main className="container mx-auto px-4 py-12">
         <div className="space-y-8">
           <div>
-            <h2 className="mb-6 text-3xl font-bold">Dashboard</h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-3xl font-bold">Dashboard</h2>
+              <AddConstructionDialog />
+            </div>
             <StatsCards />
           </div>
           

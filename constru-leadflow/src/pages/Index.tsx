@@ -4,15 +4,21 @@ import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
-import StatsCards from "@/components/StatsCards";
-import Filters from "@/components/Filters";
+import StatsCards from "@/components/RealStatsCards";
+import Filters, { type FilterState } from "@/components/Filters";
 import LeadsTable from "@/components/LeadsTable";
 import MapView from "@/components/MapView";
 import { AddConstructionDialog } from "@/components/AddConstructionDialog";
+import CompaniesDialog from "@/components/CompaniesDialog";
 
 const Index = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [filters, setFilters] = useState<FilterState>({
+    search: "",
+    status: "all",
+    location: "all",
+  });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -60,15 +66,18 @@ const Index = () => {
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-3xl font-bold">Dashboard</h2>
-              <AddConstructionDialog />
+              <div className="flex gap-2">
+                <CompaniesDialog />
+                <AddConstructionDialog />
+              </div>
             </div>
             <StatsCards />
           </div>
           
-          <Filters />
+          <Filters onFilterChange={setFilters} />
           
           <div className="grid gap-8 lg:grid-cols-2">
-            <LeadsTable />
+            <LeadsTable filters={filters} />
             <MapView />
           </div>
         </div>

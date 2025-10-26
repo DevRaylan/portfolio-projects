@@ -1,20 +1,37 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { Download } from "lucide-react";
+import { exportConstructionsToCSV } from "@/utils/exportCSV";
+import type { FilterState } from "./Filters";
 
 interface Construction {
   id: string;
   name: string;
   city: string;
+  state: string;
+  location: string;
   status: "high" | "medium" | "low";
   estimated_value: number | null;
+  contact_name: string | null;
+  contact_phone: string | null;
+  contact_email: string | null;
+  buyer_name: string | null;
+  buyer_phone: string | null;
+  buyer_email: string | null;
   created_at: string;
 }
 
-const LeadsTable = () => {
+interface LeadsTableProps {
+  filters?: FilterState;
+}
+
+const LeadsTable = ({ filters }: LeadsTableProps) => {
   const [constructions, setConstructions] = useState<Construction[]>([]);
+  const [allConstructions, setAllConstructions] = useState<Construction[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -22,16 +39,21 @@ const LeadsTable = () => {
     fetchConstructions();
   }, []);
 
+  useEffect(() => {
+    applyFilters();
+  }, [filters, allConstructions]);
+
   const fetchConstructions = async () => {
     try {
       const { data, error } = await supabase
         .from("constructions")
-        .select("id, name, city, status, estimated_value, created_at")
-        .order("created_at", { ascending: false })
-        .limit(10);
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setConstructions((data || []) as Construction[]);
+      const fetchedData = (data || []) as Construction[];
+      setAllConstructions(fetchedData);
+      setConstructions(fetchedData.slice(0, 10));
     } catch (error: any) {
       toast({
         title: "Erro ao carregar obras",
@@ -41,6 +63,44 @@ const LeadsTable = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const applyFilters = () => {
+    if (!filters) {
+      setConstructions(allConstructions.slice(0, 10));
+      return;
+    }
+
+    let filtered = [...allConstructions];
+
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      filtered = filtered.filter(
+        (c) =>
+          c.name.toLowerCase().includes(searchLower) ||
+          c.city.toLowerCase().includes(searchLower)
+      );
+    }
+
+    if (filters.status && filters.status !== "all") {
+      filtered = filtered.filter((c) => c.status === filters.status);
+    }
+
+    if (filters.location && filters.location !== "all") {
+      filtered = filtered.filter((c) =>
+        c.city.toLowerCase().includes(filters.location)
+      );
+    }
+
+    setConstructions(filtered.slice(0, 10));
+  };
+
+  const handleExport = () => {
+    exportConstructionsToCSV(constructions);
+    toast({
+      title: "Exportação concluída!",
+      description: "Os dados foram exportados para CSV com sucesso.",
+    });
   };
 
   const getBadgeVariant = (priority: string) => {
@@ -59,7 +119,13 @@ const LeadsTable = () => {
   return (
     <Card className="shadow-soft">
       <CardHeader>
-        <CardTitle className="text-2xl">Leads Recentes</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-2xl">Leads Recentes</CardTitle>
+          <Button onClick={handleExport} variant="outline" size="sm" className="gap-2">
+            <Download className="h-4 w-4" />
+            Exportar CSV
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         {loading ? (

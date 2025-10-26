@@ -14,9 +14,55 @@ export type Database = {
   }
   public: {
     Tables: {
+      companies: {
+        Row: {
+          address: string | null
+          city: string | null
+          cnpj: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          state: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          cnpj?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          state?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          cnpj?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          state?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       constructions: {
         Row: {
+          buyer_email: string | null
+          buyer_name: string | null
+          buyer_phone: string | null
           city: string
+          company_id: string | null
           contact_email: string | null
           contact_name: string | null
           contact_phone: string | null
@@ -35,7 +81,11 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          buyer_email?: string | null
+          buyer_name?: string | null
+          buyer_phone?: string | null
           city: string
+          company_id?: string | null
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
@@ -54,7 +104,11 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          buyer_email?: string | null
+          buyer_name?: string | null
+          buyer_phone?: string | null
           city?: string
+          company_id?: string | null
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
@@ -73,6 +127,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "constructions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "constructions_user_id_fkey"
             columns: ["user_id"]

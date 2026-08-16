@@ -1,0 +1,27 @@
+[
+    {
+      "id": 1,
+      "nome": "Pousada Mar Azul",
+      "cidade": "floripa",
+      "preco": 250.00,
+      "imagem": "/static/images/pousada-mar-azul.jpg",
+      "descricao": "Uma pousada aconchegante perto da praia."
+    },
+    {
+      "id": 2,
+      "nome": "Flat Vista Mar",
+      "cidade": "floripa",
+      "preco": 320.00,
+      "imagem": "/static/images/flat-vista-mar.jpg",
+      "descricao": "Apartamento com vista panorâmica do mar."
+    },
+    {
+      "id": 3,
+      "nome": "Cabana Serra Verde",
+      "cidade": "gramado",
+      "preco": 400.00,
+      "imagem": "/static/images/cabana-serra-verde.jpg",
+      "descricao": "Cabana rústica no meio da serra com lareira."
+    }
+  ]
+  

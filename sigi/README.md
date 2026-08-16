@@ -9,6 +9,16 @@ Projeto de formação do curso técnico, desenvolvido durante estágio no setor 
 - Apache + Docker
 - PHPMailer, PHPSpreadsheet, dompdf, Pusher (websocket) como bibliotecas de apoio
 
+## Tecnologias
+
+| Camada         | Tecnologia               | Por quê                                             |
+| -------------- | ------------------------- | ---------------------------------------------------- |
+| Backend        | PHP 7.4 + framework MVC próprio | Arquitetura do sistema institucional original    |
+| Persistência   | Doctrine ORM               | Mapeamento objeto-relacional, sem SQL manual         |
+| Banco de dados | SQLite (ambiente DEV)      | Portátil, sem depender de servidor externo            |
+| Infraestrutura | Docker / Docker Compose    | Isola o ambiente PHP/Apache do host                  |
+| Frontend       | HTML/CSS/JS + jQuery       | Views renderizadas pelo próprio framework            |
+
 ## Estrutura
 
 - `modules/Geral`: framework base — login, sessão, usuários, autorização

@@ -1,2 +1,2 @@
-# portfolio-projects
-Coleção de sistemas e aplicações Java (Spring Boot, JavaFX, MySQL). Inclui projetos acadêmicos e pessoais para demonstração de competências técnicas.
+# Portfolio de Projects
+Coleção de sistemas e aplicações. Inclui projetos acadêmicos e pessoais para demonstração de competências técnicas.

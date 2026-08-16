@@ -1,0 +1,7 @@
+---
+permissions:
+  - downloads
+  - logs
+  - public/temp
+  - public/downloads
+  - temp

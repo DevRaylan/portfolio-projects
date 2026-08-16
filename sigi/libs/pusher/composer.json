@@ -1,0 +1,17 @@
+{
+    "name": "Pusher",
+    "authors": [
+        {
+            "name": "07815758932",
+            "email": "glauco.laicht@udesc.br"
+        }
+    ],
+    "require": {
+        "pusher/pusher-php-server": "^7.0"
+    },
+	"autoload": {
+        "psr-4": {
+            "Pusher\\": "src/"
+        }
+    }
+}

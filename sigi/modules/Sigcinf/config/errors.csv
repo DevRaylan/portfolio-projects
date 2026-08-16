@@ -1,0 +1,5 @@
+code,httpCode,message,detail,docLink
+1,404,"Erro ao salvar usuário","","https://wiki.udesc.br"
+2,404,"Recurso não encontrado.","","https://wiki.udesc.br"
+3,404,"Informar campos obrigatorios.","",""
+4,404,"Registro não encontrado.","",""

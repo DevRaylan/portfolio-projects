@@ -1,0 +1,12 @@
+.DS_Store
+
+# Banco SQLite gerado localmente pelo instalador (ambiente DEV) — não deve ser commitado.
+files/**/*.sqlite
+
+# Diretórios de runtime — mantém a pasta, ignora o conteúdo gerado.
+files/Geral/log/*
+!files/Geral/log/.gitkeep
+files/Geral/temp/*
+!files/Geral/temp/.gitkeep
+files/Geral/downloads/*
+!files/Geral/downloads/.gitkeep

@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: calculadora-gorjetas-db
+    environment:
+      POSTGRES_DB: calculadora_gorjetas
+      POSTGRES_USER: gorjetas
+      POSTGRES_PASSWORD: gorjetas123
+    ports:
+      - "5433:5432"
+    volumes:
+      - dados_postgres:/var/lib/postgresql/data
+
+volumes:
+  dados_postgres:

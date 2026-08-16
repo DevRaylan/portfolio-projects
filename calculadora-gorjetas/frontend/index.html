@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de Gorjetas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Calculadora de Gorjetas</h1>
+
+    <section>
+        <h2>Atendentes</h2>
+        <form id="form-atendente">
+            <input type="text" id="input-nome" placeholder="Nome do atendente" required>
+            <button type="submit">Cadastrar</button>
+        </form>
+        <div id="botoes-atendente" class="botoes-atendente"></div>
+    </section>
+
+    <section>
+        <h2>Calcular Gorjeta</h2>
+        <p>Atendente selecionado: <strong id="nome-atendente-selecionado">nenhum</strong></p>
+        <form id="form-gorjeta">
+            <input type="number" id="input-valor-conta" placeholder="Valor da conta" step="0.01" min="0" required>
+            <input type="number" id="input-percentual" placeholder="Percentual (%)" step="0.01" min="0" required>
+            <button type="submit">Calcular</button>
+        </form>
+        <p id="resultado-gorjeta"></p>
+    </section>
+
+    <section>
+        <h2>Histórico</h2>
+        <ul id="lista-historico"></ul>
+    </section>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

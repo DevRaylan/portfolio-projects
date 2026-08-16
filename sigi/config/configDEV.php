@@ -5,7 +5,9 @@
 * Ex: <site>.conf deve ter uma linha com "SetEnv AMBIENTE DEV"
 */
 
-define( 'TIPO_LOGIN', 'Ldap' );
+// "True" = login local simulado (sem depender de LDAP/rede da UDESC), suportado nativamente pelo framework
+// e restrito ao ambiente DEV (ver Geral\Model\Login::checkTypeRestrictionEnvironment).
+define( 'TIPO_LOGIN', 'True' );
 
 // Dados de conexão com Bando de Dados
 define( 'BD_DRIVER', 'pdo_sqlite' );
@@ -19,7 +21,8 @@ define( 'BD_PATH', DIR_FILES . '/Geral/' . DIR_NAME_DIVERSOS . '/' . BD_NAME . '
 define( 'BD_CHARSET', 'utf8' );
 define( 'USE_DOCTRINE', 1 ); // 0 => Não | 1 => Sim
 
-// Dados de conexão com LDAP, utilizado caso TIPO_LOGIN tenha valor "Ldap"
+// Dados de conexão com LDAP, utilizado caso TIPO_LOGIN tenha valor "Ldap".
+// Placeholders — não usados com TIPO_LOGIN="True", mas mantidos para não quebrar código que referencia as constantes.
 define( 'LDAP_HOST', 'ldap.example.local' );
 define( 'LDAP_DOMINIO', 'dc=example,dc=local' );
 

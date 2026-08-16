@@ -1,0 +1,25 @@
+# Imagem leve só para desenvolvimento/demonstração local (ambiente DEV, SQLite, sem LDAP real).
+# Diferente do Dockerfile original: não instala os drivers de SQL Server (não usados em DEV).
+FROM php:7.4-apache
+
+RUN apt-get update && apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libzip-dev \
+        libxml2-dev \
+        libsqlite3-dev \
+        libonig-dev \
+        libldap2-dev \
+        default-libmysqlclient-dev \
+        sqlite3 \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure ldap --with-libdir=lib/$(uname -m)-linux-gnu/ \
+    && docker-php-ext-install -j$(nproc) gd pdo pdo_sqlite pdo_mysql mbstring xml zip soap ldap \
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY docker/apache-dev.conf /etc/apache2/sites-available/000-default.conf
+COPY docker/php-dev.ini /usr/local/etc/php/conf.d/zz-dev.ini
+
+WORKDIR /var/www/html

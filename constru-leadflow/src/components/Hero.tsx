@@ -3,6 +3,10 @@ import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-construction.jpg";
 
 const Hero = () => {
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section className="relative overflow-hidden bg-gradient-subtle py-20 md:py-32">
       <div className="absolute inset-0 -z-10 opacity-10">
@@ -32,11 +36,15 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-            <Button size="lg" className="gap-2 shadow-medium transition-all hover:shadow-strong">
+            <Button
+              size="lg"
+              className="gap-2 shadow-medium transition-all hover:shadow-strong"
+              onClick={() => scrollTo("leads")}
+            >
               Começar Agora
               <ArrowRight className="h-4 w-4" />
             </Button>
-            <Button size="lg" variant="outline">
+            <Button size="lg" variant="outline" onClick={() => scrollTo("analytics")}>
               Ver Demonstração
             </Button>
           </div>

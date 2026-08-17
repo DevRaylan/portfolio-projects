@@ -1,4 +1,4 @@
-import { Building2, Menu, LogOut } from "lucide-react";
+import { Building2, Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,8 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import type { User } from "@supabase/supabase-js";
 
+const NAV_LINKS = [
+  { href: "#dashboard", label: "Dashboard" },
+  { href: "#leads", label: "Leads" },
+  { href: "#analytics", label: "Analytics" },
+  { href: "#integrations", label: "Integrações" },
+];
+
 const Header = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -45,18 +53,15 @@ const Header = () => {
         </div>
         
         <nav className="hidden items-center gap-6 md:flex">
-          <a href="#dashboard" className="text-sm font-medium transition-colors hover:text-primary">
-            Dashboard
-          </a>
-          <a href="#leads" className="text-sm font-medium transition-colors hover:text-primary">
-            Leads
-          </a>
-          <a href="#analytics" className="text-sm font-medium transition-colors hover:text-primary">
-            Analytics
-          </a>
-          <a href="#integrations" className="text-sm font-medium transition-colors hover:text-primary">
-            Integrações
-          </a>
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              {link.label}
+            </a>
+          ))}
         </nav>
         
         <div className="flex items-center gap-4">
@@ -77,11 +82,42 @@ const Header = () => {
               </Button>
             </>
           )}
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <Menu className="h-5 w-5" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
       </div>
+
+      {mobileMenuOpen && (
+        <nav className="flex flex-col gap-1 border-t px-4 py-4 md:hidden">
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="rounded-md px-2 py-2 text-sm font-medium transition-colors hover:bg-secondary hover:text-primary"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {link.label}
+            </a>
+          ))}
+          {user ? (
+            <Button variant="ghost" onClick={handleLogout} className="justify-start">
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
+            </Button>
+          ) : (
+            <Button onClick={() => navigate("/auth")} className="justify-start">
+              Entrar
+            </Button>
+          )}
+        </nav>
+      )}
     </header>
   );
 };

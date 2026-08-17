@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useCompanies } from "@/hooks/useCompanies";
+import { CONSTRUCTIONS_QUERY_KEY } from "@/lib/queryKeys";
 import {
   Dialog,
   DialogContent,
@@ -54,42 +57,17 @@ const constructionSchema = z.object({
 
 type ConstructionFormData = z.infer<typeof constructionSchema>;
 
-interface Company {
-  id: string;
-  name: string;
-}
-
 export function AddConstructionDialog() {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [companies, setCompanies] = useState<Company[]>([]);
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (open) {
-      fetchCompanies();
-    }
-  }, [open]);
-
-  const fetchCompanies = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("companies")
-        .select("id, name")
-        .order("name", { ascending: true });
-
-      if (error) throw error;
-      setCompanies((data || []) as Company[]);
-    } catch (error: any) {
-      console.error("Erro ao carregar empresas:", error.message);
-    }
-  };
+  const queryClient = useQueryClient();
+  const { data: companies = [] } = useCompanies();
 
   const form = useForm<ConstructionFormData>({
     resolver: zodResolver(constructionSchema),
     defaultValues: {
       name: "",
-      company_id: "",
+      company_id: "none",
       location: "",
       city: "",
       state: "",
@@ -108,15 +86,14 @@ export function AddConstructionDialog() {
     },
   });
 
-  const onSubmit = async (data: ConstructionFormData) => {
-    setLoading(true);
-    try {
+  const addConstruction = useMutation({
+    mutationFn: async (data: ConstructionFormData) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
 
       const insertData = {
         name: data.name,
-        company_id: data.company_id || null,
+        company_id: data.company_id && data.company_id !== "none" ? data.company_id : null,
         location: data.location,
         city: data.city,
         state: data.state,
@@ -136,26 +113,28 @@ export function AddConstructionDialog() {
       };
 
       const { error } = await supabase.from("constructions").insert([insertData]);
-
       if (error) throw error;
-
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CONSTRUCTIONS_QUERY_KEY });
       toast({
         title: "Obra cadastrada!",
         description: "A obra foi adicionada com sucesso.",
       });
-
       form.reset();
       setOpen(false);
-      window.location.reload();
-    } catch (error: any) {
+    },
+    onError: (error: Error) => {
       toast({
         title: "Erro ao cadastrar obra",
         description: error.message,
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
-    }
+    },
+  });
+
+  const onSubmit = (data: ConstructionFormData) => {
+    addConstruction.mutate(data);
   };
 
   return (
@@ -204,7 +183,7 @@ export function AddConstructionDialog() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">Nenhuma</SelectItem>
+                        <SelectItem value="none">Nenhuma</SelectItem>
                         {companies.map((company) => (
                           <SelectItem key={company.id} value={company.id}>
                             {company.name}
@@ -461,8 +440,8 @@ export function AddConstructionDialog() {
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancelar
               </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? "Cadastrando..." : "Cadastrar Obra"}
+              <Button type="submit" disabled={addConstruction.isPending}>
+                {addConstruction.isPending ? "Cadastrando..." : "Cadastrar Obra"}
               </Button>
             </div>
           </form>

@@ -1,73 +1,122 @@
-# Welcome to your Lovable project
+# ConstruLink
 
-## Project info
+Inteligência comercial para o setor da construção civil. Mapeie obras em fase inicial, qualifique leads, gerencie empresas construtoras e acompanhe tudo em um dashboard com mapa e analytics.
 
-**URL**: https://lovable.dev/projects/0f5d4769-f631-4256-980e-7b18b7f85a2f
+## Funcionalidades
 
-## How can I edit this code?
+- **Dashboard** — visão geral com estatísticas (obras cadastradas, leads de alta prioridade, valor total estimado, empresas cadastradas).
+- **Leads** — listagem de obras com busca, filtros por prioridade/cidade e exportação para CSV.
+- **Mapa de Obras** — visualização geográfica das obras cadastradas (Leaflet + OpenStreetMap).
+- **Analytics** — gráficos de leads por prioridade e por cidade.
+- **Empresas** — cadastro, edição e exclusão de empresas construtoras/empreiteiras.
+- **Integrações** — painel com integrações planejadas (CRM, WhatsApp, E-mail, Webhooks/API), marcadas como "Em breve".
 
-There are several ways of editing your application.
+## Tecnologias
 
-**Use Lovable**
+- [Vite](https://vitejs.dev/) + [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [shadcn/ui](https://ui.shadcn.com/) + [Tailwind CSS](https://tailwindcss.com/)
+- [Supabase](https://supabase.com/) (Postgres + Auth) como backend
+- [@tanstack/react-query](https://tanstack.com/query) para cache e sincronização de dados
+- [react-hook-form](https://react-hook-form.com/) + [zod](https://zod.dev/) para formulários e validação
+- [recharts](https://recharts.org/) para os gráficos de Analytics
+- [Leaflet](https://leafletjs.com/) para o mapa
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/0f5d4769-f631-4256-980e-7b18b7f85a2f) and start prompting.
+## Pré-requisitos
 
-Changes made via Lovable will be committed automatically to this repo.
+- [Node.js](https://nodejs.org/) e npm
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (necessário para rodar o Supabase localmente)
 
-**Use your preferred IDE**
+Não é preciso instalar o Supabase CLI globalmente — os comandos abaixo usam `npx`.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Rodando o projeto localmente
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### 1. Clonar e instalar dependências
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone <URL_DO_REPOSITORIO>
+cd constru-leadflow
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 2. Subir o Supabase local
 
-# Step 3: Install the necessary dependencies.
-npm i
+Isso cria um banco Postgres local via Docker e aplica automaticamente as migrations em `supabase/migrations/`:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```sh
+npx supabase start
+```
+
+Ao final, o comando imprime as credenciais locais (`API URL`, `anon key`, `Studio URL`, etc). Guarde essas informações — elas mudam a cada `supabase start` do zero.
+
+### 3. Configurar as variáveis de ambiente
+
+Copie `.env.example` para `.env` e preencha com os valores impressos no passo anterior:
+
+```sh
+cp .env.example .env
+```
+
+```
+VITE_SUPABASE_URL="http://127.0.0.1:54321"
+VITE_SUPABASE_PUBLISHABLE_KEY="<anon key impressa pelo supabase start>"
+VITE_SUPABASE_PROJECT_ID="<opcional, não é usado pelo client>"
+```
+
+> O `.env` não é versionado no git (está no `.gitignore`). Nunca commite a `service_role key` — ela ignora todas as políticas de RLS.
+
+### 4. Rodar o servidor de desenvolvimento
+
+```sh
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+A aplicação abre em `http://localhost:8080` (ou na próxima porta livre, se essa já estiver em uso).
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### 5. Criar uma conta
 
-**Use GitHub Codespaces**
+Acesse `/auth` na aplicação e crie uma conta pela tela de cadastro. Alternativamente, é possível criar um usuário já confirmado direto pela API de admin do GoTrue local:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```sh
+curl -s -X POST 'http://127.0.0.1:54321/auth/v1/admin/users' \
+  -H "apikey: <service_role key>" \
+  -H "Authorization: Bearer <service_role key>" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@exemplo.com","password":"SuaSenhaAqui","email_confirm":true}'
+```
 
-## What technologies are used for this project?
+### Painel do banco de dados (Supabase Studio)
 
-This project is built with:
+Com o Supabase local rodando, acesse `http://127.0.0.1:54323` para visualizar e editar as tabelas diretamente.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Parando o ambiente local
 
-## How can I deploy this project?
+```sh
+npx supabase stop
+```
 
-Simply open [Lovable](https://lovable.dev/projects/0f5d4769-f631-4256-980e-7b18b7f85a2f) and click on Share -> Publish.
+## Scripts disponíveis
 
-## Can I connect a custom domain to my Lovable project?
+| Comando | Descrição |
+| --- | --- |
+| `npm run dev` | Inicia o servidor de desenvolvimento (Vite) |
+| `npm run build` | Gera o build de produção |
+| `npm run build:dev` | Gera o build em modo desenvolvimento |
+| `npm run lint` | Roda o ESLint |
+| `npm run preview` | Serve o build de produção localmente |
 
-Yes, you can!
+## Estrutura do banco de dados
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+As migrations em `supabase/migrations/` definem, nessa ordem:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- **`profiles`** — dados do usuário (nome, e-mail, empresa), criado automaticamente via trigger ao cadastrar uma conta.
+- **`constructions`** — obras/leads (localização, status de prioridade, valor estimado, contatos, comprador).
+- **`companies`** — empresas construtoras/empreiteiras.
+- Migrations posteriores corrigem privilégios de schema (`GRANT`) e a trigger de criação de perfil para também salvar o campo empresa.
+
+Todas as tabelas têm Row Level Security (RLS) habilitado: cada usuário só acessa os próprios registros (`auth.uid() = user_id`).
+
+## Notas de desenvolvimento
+
+- Toda leitura de dados (obras e empresas) passa pelos hooks `useConstructions`/`useCompanies` (`src/hooks/`), que usam `react-query` com chaves de cache compartilhadas em `src/lib/queryKeys.ts`. Mutations (criar/editar/excluir) invalidam essas chaves para atualizar a UI automaticamente, sem recarregar a página.
+- Há um Error Boundary global (`src/components/ErrorBoundary.tsx`) que evita que um erro de render em um componente derrube a aplicação inteira.
+- O painel de Integrações é apenas informativo/roadmap — nenhuma integração externa está implementada de fato ainda.

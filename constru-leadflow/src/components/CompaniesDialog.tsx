@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useCompanies, type Company } from "@/hooks/useCompanies";
+import { COMPANIES_QUERY_KEY } from "@/lib/queryKeys";
 import {
   Dialog,
   DialogContent,
@@ -54,24 +57,13 @@ const companySchema = z.object({
 
 type CompanyFormData = z.infer<typeof companySchema>;
 
-interface Company {
-  id: string;
-  name: string;
-  cnpj: string | null;
-  address: string | null;
-  city: string | null;
-  state: string | null;
-  phone: string | null;
-  email: string | null;
-}
-
 const CompaniesDialog = () => {
   const [open, setOpen] = useState(false);
-  const [companies, setCompanies] = useState<Company[]>([]);
   const [editingCompany, setEditingCompany] = useState<Company | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const { data: companies = [] } = useCompanies();
 
   const form = useForm<CompanyFormData>({
     resolver: zodResolver(companySchema),
@@ -85,12 +77,6 @@ const CompaniesDialog = () => {
       email: "",
     },
   });
-
-  useEffect(() => {
-    if (open) {
-      fetchCompanies();
-    }
-  }, [open]);
 
   useEffect(() => {
     if (editingCompany) {
@@ -116,30 +102,8 @@ const CompaniesDialog = () => {
     }
   }, [editingCompany, form]);
 
-  const fetchCompanies = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from("companies")
-        .select("*")
-        .order("name", { ascending: true });
-
-      if (error) throw error;
-      setCompanies((data || []) as Company[]);
-    } catch (error: any) {
-      toast({
-        title: "Erro ao carregar empresas",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const onSubmit = async (data: CompanyFormData) => {
-    setLoading(true);
-    try {
+  const saveCompany = useMutation({
+    mutationFn: async (data: CompanyFormData) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
 
@@ -148,73 +112,72 @@ const CompaniesDialog = () => {
           .from("companies")
           .update(data)
           .eq("id", editingCompany.id);
-
         if (error) throw error;
-        toast({
-          title: "Empresa atualizada!",
-          description: "A empresa foi atualizada com sucesso.",
-        });
       } else {
-        const { error } = await supabase
-          .from("companies")
-          .insert([{ 
-            name: data.name,
-            cnpj: data.cnpj || null,
-            address: data.address || null,
-            city: data.city || null,
-            state: data.state || null,
-            phone: data.phone || null,
-            email: data.email || null,
-            user_id: user.id 
-          }]);
-
+        const { error } = await supabase.from("companies").insert([{
+          name: data.name,
+          cnpj: data.cnpj || null,
+          address: data.address || null,
+          city: data.city || null,
+          state: data.state || null,
+          phone: data.phone || null,
+          email: data.email || null,
+          user_id: user.id,
+        }]);
         if (error) throw error;
-        toast({
-          title: "Empresa cadastrada!",
-          description: "A empresa foi adicionada com sucesso.",
-        });
       }
-
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: COMPANIES_QUERY_KEY });
+      toast({
+        title: editingCompany ? "Empresa atualizada!" : "Empresa cadastrada!",
+        description: editingCompany
+          ? "A empresa foi atualizada com sucesso."
+          : "A empresa foi adicionada com sucesso.",
+      });
       form.reset();
       setEditingCompany(null);
-      fetchCompanies();
-    } catch (error: any) {
+    },
+    onError: (error: Error) => {
       toast({
         title: "Erro ao salvar empresa",
         description: error.message,
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
-    }
+    },
+  });
+
+  const onSubmit = (data: CompanyFormData) => {
+    saveCompany.mutate(data);
   };
 
-  const handleDelete = async () => {
-    if (!deleteId) return;
-
-    try {
-      const { error } = await supabase
-        .from("companies")
-        .delete()
-        .eq("id", deleteId);
-
+  const deleteCompany = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("companies").delete().eq("id", id);
       if (error) throw error;
-
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: COMPANIES_QUERY_KEY });
       toast({
         title: "Empresa excluída!",
         description: "A empresa foi removida com sucesso.",
       });
-
-      fetchCompanies();
-    } catch (error: any) {
+    },
+    onError: (error: Error) => {
       toast({
         title: "Erro ao excluir empresa",
         description: error.message,
         variant: "destructive",
       });
-    } finally {
+    },
+    onSettled: () => {
       setDeleteId(null);
-    }
+    },
+  });
+
+  const handleDelete = () => {
+    if (!deleteId) return;
+    deleteCompany.mutate(deleteId);
   };
 
   return (
@@ -342,7 +305,7 @@ const CompaniesDialog = () => {
                 </div>
 
                 <div className="flex gap-2">
-                  <Button type="submit" disabled={loading}>
+                  <Button type="submit" disabled={saveCompany.isPending}>
                     {editingCompany ? "Atualizar" : "Cadastrar"} Empresa
                   </Button>
                   {editingCompany && (

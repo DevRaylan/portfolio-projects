@@ -10,6 +10,8 @@ import LeadsTable from "@/components/LeadsTable";
 import MapView from "@/components/MapView";
 import { AddConstructionDialog } from "@/components/AddConstructionDialog";
 import CompaniesDialog from "@/components/CompaniesDialog";
+import Analytics from "@/components/Analytics";
+import Integrations from "@/components/Integrations";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -62,9 +64,9 @@ const Index = () => {
       <Features />
       
       <main className="container mx-auto px-4 py-12">
-        <div className="space-y-8">
-          <div>
-            <div className="flex justify-between items-center mb-6">
+        <div className="space-y-20">
+          <section id="dashboard" className="scroll-mt-20 space-y-6">
+            <div className="flex justify-between items-center">
               <h2 className="text-3xl font-bold">Dashboard</h2>
               <div className="flex gap-2">
                 <CompaniesDialog />
@@ -72,14 +74,26 @@ const Index = () => {
               </div>
             </div>
             <StatsCards />
-          </div>
-          
-          <Filters onFilterChange={setFilters} />
-          
-          <div className="grid gap-8 lg:grid-cols-2">
-            <LeadsTable filters={filters} />
-            <MapView />
-          </div>
+          </section>
+
+          <section id="leads" className="scroll-mt-20 space-y-6">
+            <h2 className="text-3xl font-bold">Leads</h2>
+            <Filters onFilterChange={setFilters} />
+            <div className="grid gap-8 lg:grid-cols-2">
+              <LeadsTable filters={filters} />
+              <MapView />
+            </div>
+          </section>
+
+          <section id="analytics" className="scroll-mt-20 space-y-6">
+            <h2 className="text-3xl font-bold">Analytics</h2>
+            <Analytics />
+          </section>
+
+          <section id="integrations" className="scroll-mt-20 space-y-6">
+            <h2 className="text-3xl font-bold">Integrações</h2>
+            <Integrations />
+          </section>
         </div>
       </main>
       

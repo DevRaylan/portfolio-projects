@@ -1,79 +1,25 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Download } from "lucide-react";
 import { exportConstructionsToCSV } from "@/utils/exportCSV";
+import { useConstructions } from "@/hooks/useConstructions";
 import type { FilterState } from "./Filters";
-
-interface Construction {
-  id: string;
-  name: string;
-  city: string;
-  state: string;
-  location: string;
-  status: "high" | "medium" | "low";
-  estimated_value: number | null;
-  contact_name: string | null;
-  contact_phone: string | null;
-  contact_email: string | null;
-  buyer_name: string | null;
-  buyer_phone: string | null;
-  buyer_email: string | null;
-  created_at: string;
-}
 
 interface LeadsTableProps {
   filters?: FilterState;
 }
 
 const LeadsTable = ({ filters }: LeadsTableProps) => {
-  const [constructions, setConstructions] = useState<Construction[]>([]);
-  const [allConstructions, setAllConstructions] = useState<Construction[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: allConstructions, isLoading: loading, isError } = useConstructions();
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchConstructions();
-  }, []);
+  const constructions = useMemo(() => {
+    let filtered = allConstructions ?? [];
 
-  useEffect(() => {
-    applyFilters();
-  }, [filters, allConstructions]);
-
-  const fetchConstructions = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("constructions")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      const fetchedData = (data || []) as Construction[];
-      setAllConstructions(fetchedData);
-      setConstructions(fetchedData.slice(0, 10));
-    } catch (error: any) {
-      toast({
-        title: "Erro ao carregar obras",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const applyFilters = () => {
-    if (!filters) {
-      setConstructions(allConstructions.slice(0, 10));
-      return;
-    }
-
-    let filtered = [...allConstructions];
-
-    if (filters.search) {
+    if (filters?.search) {
       const searchLower = filters.search.toLowerCase();
       filtered = filtered.filter(
         (c) =>
@@ -82,18 +28,18 @@ const LeadsTable = ({ filters }: LeadsTableProps) => {
       );
     }
 
-    if (filters.status && filters.status !== "all") {
+    if (filters?.status && filters.status !== "all") {
       filtered = filtered.filter((c) => c.status === filters.status);
     }
 
-    if (filters.location && filters.location !== "all") {
+    if (filters?.location && filters.location !== "all") {
       filtered = filtered.filter((c) =>
         c.city.toLowerCase().includes(filters.location)
       );
     }
 
-    setConstructions(filtered.slice(0, 10));
-  };
+    return filtered.slice(0, 10);
+  }, [allConstructions, filters]);
 
   const handleExport = () => {
     exportConstructionsToCSV(constructions);
@@ -132,6 +78,10 @@ const LeadsTable = ({ filters }: LeadsTableProps) => {
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
             <p className="mt-4 text-sm text-muted-foreground">Carregando obras...</p>
+          </div>
+        ) : isError ? (
+          <div className="text-center py-8">
+            <p className="text-destructive">Erro ao carregar obras. Tente recarregar a página.</p>
           </div>
         ) : constructions.length === 0 ? (
           <div className="text-center py-8">

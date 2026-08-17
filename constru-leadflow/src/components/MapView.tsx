@@ -1,48 +1,14 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useConstructions } from "@/hooks/useConstructions";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-interface Construction {
-  id: string;
-  name: string;
-  latitude: number;
-  longitude: number;
-  status: "high" | "medium" | "low";
-}
-
 const MapView = () => {
-  const [constructions, setConstructions] = useState<Construction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+  const { data: constructions = [], isLoading: loading, isError } = useConstructions();
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    fetchConstructions();
-  }, []);
-
-  const fetchConstructions = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("constructions")
-        .select("id, name, latitude, longitude, status");
-
-      if (error) throw error;
-      setConstructions((data || []) as Construction[]);
-    } catch (error: any) {
-      toast({
-        title: "Erro ao carregar mapa",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     if (!mapContainerRef.current || loading || constructions.length === 0) return;
@@ -133,6 +99,10 @@ const MapView = () => {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
               <p className="mt-4 text-sm text-muted-foreground">Carregando mapa...</p>
             </div>
+          </div>
+        ) : isError ? (
+          <div className="h-[400px] flex items-center justify-center border border-border rounded-lg">
+            <p className="text-destructive">Erro ao carregar o mapa. Tente recarregar a página.</p>
           </div>
         ) : constructions.length === 0 ? (
           <div className="h-[400px] flex items-center justify-center border border-border rounded-lg">

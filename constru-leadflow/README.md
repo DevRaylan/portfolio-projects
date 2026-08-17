@@ -13,14 +13,15 @@ Inteligência comercial para o setor da construção civil. Mapeie obras em fase
 
 ## Tecnologias
 
-- [Vite](https://vitejs.dev/) + [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- [shadcn/ui](https://ui.shadcn.com/) + [Tailwind CSS](https://tailwindcss.com/)
-- [Supabase](https://supabase.com/) (Postgres + Auth) como backend
-- [@tanstack/react-query](https://tanstack.com/query) para cache e sincronização de dados
-- [react-hook-form](https://react-hook-form.com/) + [zod](https://zod.dev/) para formulários e validação
-- [recharts](https://recharts.org/) para os gráficos de Analytics
-- [Leaflet](https://leafletjs.com/) para o mapa
-
+| Camada       | Tecnologia                              | Por quê                                                        |
+| ------------ | ---------------------------------------- | --------------------------------------------------------------- |
+| Frontend     | React 18 + TypeScript + Vite             | Build rápido e tipagem estática                                 |
+| UI           | shadcn/ui + Tailwind CSS                 | Componentes acessíveis com estilização utilitária                |
+| Dados        | Supabase (Postgres + Auth)               | Backend gerenciado com RLS por linha e autenticação pronta       |
+| Cache/estado | @tanstack/react-query                    | Cache e sincronização automática após criar/editar/excluir       |
+| Formulários  | react-hook-form + zod                    | Validação de formulários com tipagem                             |
+| Gráficos     | recharts                                 | Gráficos de Analytics (leads por prioridade/cidade)               |
+| Mapa         | Leaflet                                  | Mapa de obras com marcadores                                     |
 ## Pré-requisitos
 
 - [Node.js](https://nodejs.org/) e npm

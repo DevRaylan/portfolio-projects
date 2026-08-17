@@ -45,5 +45,3 @@ Uso multiusuário em rede local, sem login por enquanto.
 - Percentuais de gorjeta são pré-cadastrados (não digitados livremente na hora de calcular)
 - Motivo de troca de atendente é obrigatório e fica registrado em histórico próprio (`TrocaAtendente`)
 
-## Em aberto / próximos passos
-- Nenhum requisito pendente conhecido no momento — próximos passos dependem de novas necessidades que surgirem no uso do sistema

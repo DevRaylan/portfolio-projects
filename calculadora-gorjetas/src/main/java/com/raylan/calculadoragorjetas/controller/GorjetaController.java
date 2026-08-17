@@ -31,20 +31,25 @@ public class GorjetaController {
 
     @PostMapping
     public Gorjeta calcular(@Valid @RequestBody CalcularGorjetaRequest request) {
-        return gorjetaService.calcular(request.atendenteId(), request.valorConta(), request.percentual());
+        return gorjetaService.calcular(request.atendenteId(), request.valorConta(), request.percentual(), request.mesaId());
     }
 
     @GetMapping("/atendente/{atendenteId}")
     public List<Gorjeta> historico(@PathVariable Long atendenteId) {
         return gorjetaService.historicoPorAtendente(atendenteId);
     }
+    @GetMapping
+    public List<Gorjeta> listarTodas() {
+        return gorjetaService.listarTodas();
+    }
 
-    public record CalcularGorjetaRequest(
+            public record CalcularGorjetaRequest(
             @NotNull(message = "Atendente é obrigatório") Long atendenteId,
 
             @NotNull(message = "Valor da conta é obrigatório") @DecimalMin(value = "0.0", inclusive = false, message = "Valor da conta deve ser maior que zero") BigDecimal valorConta,
 
-            @NotNull(message = "Percentual é obrigatório") @DecimalMin(value = "0.0", inclusive = false, message = "Percentual deve ser maior que zero") @DecimalMax(value = "100.0", message = "Percentual não pode ser maior que 100") BigDecimal percentual) {
-    }
+            @NotNull(message = "Percentual é obrigatório") @DecimalMin(value = "0.0", inclusive = false, message = "Percentual deve ser maior que zero") @DecimalMax(value = "100.0", message = "Percentual não pode ser maior que 100") BigDecimal percentual,
 
+            @NotNull(message = "Mesa é obrigatória") Long mesaId) {
+    }
 }

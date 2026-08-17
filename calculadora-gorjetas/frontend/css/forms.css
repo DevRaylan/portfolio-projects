@@ -1,0 +1,62 @@
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+input {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 16px;
+  border: 1px solid var(--md-outline);
+  border-radius: 4px;
+  background: var(--md-surface);
+  color: var(--md-on-surface);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: text;
+}
+
+input:focus {
+  outline: none;
+  border: 2px solid var(--md-primary);
+  padding: 11px 15px;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+.botao-preenchido,
+form button[type="submit"],
+#btn-abrir-atendentes,
+#btn-abrir-mesas,
+#btn-abrir-percentuais {
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: var(--md-elevation-1);
+  transition: box-shadow 0.2s ease;
+}
+
+.botao-preenchido:hover,
+form button[type="submit"]:hover,
+#btn-abrir-atendentes:hover,
+#btn-abrir-mesas:hover,
+#btn-abrir-percentuais:hover {
+  box-shadow: var(--md-elevation-2);
+}
+
+.botao-texto {
+  background: none;
+  color: var(--md-primary);
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+}

@@ -58,12 +58,12 @@ Troque por:
 | ------ | -------------------------- | ------------------------------------- | -------------------------------------------------------------- |
 | POST   | `/atendentes`              | Cadastra um atendente                 | `{ "nome": "Maria" }`                                          |
 | GET    | `/atendentes`              | Lista todos os atendentes             | —                                                              |
-| POST   | `/gorjetas`                | Calcula e salva uma gorjeta           | `{ "atendenteId": 1, "valorConta": 150.00, "percentual": 10 }` |
+| POST   | `/gorjetas`                | Calcula e salva uma gorjeta  | `{ "atendenteId": 1, "valorConta": 150.00, "percentual": 10, "numeroMesa": 5 }` |
 | GET    | `/gorjetas/atendente/{id}` | Histórico de gorjetas de um atendente | —                                                              |
 
 ## Status do projeto
 
 - [x] Backend (Spring Boot + PostgreSQL + API REST)
 - [x] Interface web (HTML/CSS/JS)
-- [ ] Associação de gorjeta a número de mesa (futuro)
+- [x] Associação de gorjeta a número de mesa (futuro)
 ````

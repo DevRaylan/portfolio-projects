@@ -20,10 +20,14 @@ public class Gorjeta {
     private BigDecimal valorConta;
     private BigDecimal percentual;
     private BigDecimal valorGorjeta;
-    private LocalDateTime dataHora;
+    private LocalDateTime dataAbertura;
+    private LocalDateTime dataFechamento;
 
     @ManyToOne
     private Atendente atendente;
+
+    @ManyToOne
+    private Mesa mesa;
 
     public Long getId() {
         return id;
@@ -46,11 +50,23 @@ public class Gorjeta {
     public void setValorGorjeta(BigDecimal valorGorjeta) {
         this.valorGorjeta = valorGorjeta;
     }
-    public LocalDateTime getDataHora() {
-        return dataHora;
+    public LocalDateTime getDataAbertura() {
+        return dataAbertura;
     }
-    public void setDataHora(LocalDateTime dataHora) {
-        this.dataHora = dataHora;
+    public void setDataAbertura(LocalDateTime dataAbertura) {
+        this.dataAbertura = dataAbertura;
+    }
+    public LocalDateTime getDataFechamento() {
+        return dataFechamento;
+    }
+    public void setDataFechamento(LocalDateTime dataFechamento) {
+        this.dataFechamento = dataFechamento;
+    }
+       public Mesa getMesa() {
+        return mesa;
+    }
+    public void setMesa(Mesa mesa) {
+        this.mesa = mesa;
     }
     public Atendente getAtendente() {
         return atendente;

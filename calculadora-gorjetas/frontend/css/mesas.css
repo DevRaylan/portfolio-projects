@@ -1,0 +1,52 @@
+.barra-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.grade-mesas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.botao-mesa {
+  aspect-ratio: 1;
+  border-radius: 16px;
+  border: none;
+  background: #C8E6C9;
+  color: #1B5E20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 500;
+  font-family: inherit;
+  font-size: 18px;
+  box-shadow: var(--md-elevation-1);
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+
+.botao-mesa:hover {
+  box-shadow: var(--md-elevation-2);
+}
+
+.botao-mesa.ocupada {
+  background: #FFF3C4;
+  color: #7A5B00;
+}
+
+.botao-mesa.indisponivel {
+  background: #FFCDD2;
+  color: #7A0000;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.botao-mesa .nome-atendente-mesa {
+  font-size: 16px;
+  font-weight: 400;
+}

@@ -1,0 +1,89 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.oculto {
+  display: none;
+}
+
+.modal-conteudo {
+  background: var(--md-surface);
+  padding: 24px;
+  border-radius: 28px;
+  width: 90%;
+  max-width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--md-elevation-3);
+}
+
+.modal-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.botao-fechar {
+  background: none;
+  font-size: 20px;
+  color: var(--md-on-surface-variant);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.botao-fechar:hover {
+  background: var(--md-surface-variant);
+}
+
+.lista-gerenciar-atendentes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item-gerenciar-atendente {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--md-outline-variant);
+}
+
+.item-gerenciar-atendente:last-child {
+  border-bottom: none;
+}
+
+.item-gerenciar-atendente span {
+  flex: 1;
+  font-size: 14px;
+}
+
+.item-gerenciar-atendente span.inativo {
+  color: var(--md-on-surface-variant);
+  text-decoration: line-through;
+}
+
+.item-gerenciar-atendente button {
+  background: none;
+  color: var(--md-primary);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.item-gerenciar-atendente button:hover {
+  background: var(--md-primary-container);
+}

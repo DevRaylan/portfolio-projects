@@ -13,8 +13,7 @@ local, sem login por enquanto.
 | RF02 | Calcular a gorjeta de uma conta (valor da conta + percentual) |
 | RF03 | Associar cada cálculo de gorjeta a um atendente específico |
 | RF04 | Guardar histórico das gorjetas calculadas (por atendente, de forma permanente) |
-| RF05 *(futuro — fora do escopo inicial)* | Associar a gorjeta também a um número de mesa |
-
+| RF05 | Associar a gorjeta também a um número de mesa |
 ## Requisitos Não-Funcionais (como o sistema deve se comportar)
 
 | ID | Descrição |

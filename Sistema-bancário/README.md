@@ -86,7 +86,8 @@ _(registro das classes conforme vão sendo criadas)_
 - [x] Modelo validado por testes de unidade (`ContaTest`) — polimorfismo, cheque especial e restrição de saldo negativo confirmados
 - [x] `ContaRepository` (interface) + `ContaRepositoryMemoria` (`@Repository`, armazenamento em `ConcurrentHashMap`)
 - [x] `ContaService` (`@Service`, injeção via construtor do `ContaRepository`) — validado por testes (`ContaServiceTest`): criação de conta, transferência entre contas e falha por saldo insuficiente sem perda de dinheiro
-- [x] `ContaController` (`@RestController`) + DTOs (`CriarContaRequest`, `ValorRequest`, `TransferenciaRequest`, `ContaResponse`) — DTOs evitam expor as entidades de domínio direto na API (Conta ↔ Cliente têm referência circular) e desacoplam a API do modelo interno
+- [x] `ContaController` (`@RestController`) + DTOs (`CriarContaRequest`, `ValorRequest`, `TransferenciaRequest`, `ContaResponse`, `TransacaoResponse`) — DTOs evitam expor as entidades de domínio direto na API (Conta ↔ Cliente têm referência circular) e desacoplam a API do modelo interno
+- [x] `ContaResponse` inclui o histórico de transações (`List<TransacaoResponse>`), fechando o requisito original de extrato
 - [x] `ApiExceptionHandler` (`@RestControllerAdvice`) — mapeia `SaldoInsuficienteException` para HTTP 422 e `ContaInvalidaException` para HTTP 404
 
 ## 5. Testes
@@ -122,4 +123,19 @@ Aplicação disponível em `http://localhost:8081`.
 | POST | `/contas/{numero}/transferencias` | `{numeroDestino, valor}` | Transferência entre contas |
 
 ## 7. Refatoração/revisão
+
+- Duplicação identificada: validação "valor deve ser positivo" repetida em `Conta.depositar()`, `ContaCorrente.sacar()` e `ContaPoupanca.sacar()`; lógica de registrar saque repetida nas duas subclasses
+- Extraídos dois métodos `protected` em `Conta`: `validarValorPositivo(valor)` e `registrarSaque(valor)`, reaproveitados pelas subclasses
+- Comportamento inalterado — confirmado pelos testes automatizados (`./mvnw test`, 8/8 passando) após a mudança
+
+## 8. Frontend
+
+### 8.1 Stack
+- **React + Vite** (SPA separada do backend)
+- **Tailwind CSS** para estilização
+- **TanStack Query (react-query)** para chamadas à API (loading/erro/cache)
+- Pasta: `Sistema-bancário/frontend` (irmã do backend, mesmo padrão do projeto `locacao`)
+- CORS precisa ser habilitado no backend, já que o frontend roda em porta/origem diferente durante o desenvolvimento
+
+### 8.2 Telas
 _(a definir)_

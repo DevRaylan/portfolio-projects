@@ -139,7 +139,7 @@ Aplicação disponível em `http://localhost:8081`.
 
 ### 8.2 Telas
 - Dashboard único: lista de contas + formulário de criação no topo
-- Ações por conta (depositar, sacar, transferir) — próxima etapa
+- Ações por conta (depositar, sacar, transferir), inline em cada card
 
 ### 8.3 Rodando o sistema completo
 - `npm run dev` na raiz do projeto (`Sistema-bancário/`) sobe backend (Maven) e frontend (Vite) juntos via `concurrently`
@@ -150,4 +150,5 @@ Aplicação disponível em `http://localhost:8081`.
 - [x] `useContas` — hook de leitura (`useQuery`) para listar contas
 - [x] `useCriarConta` — hook de escrita (`useMutation`) com invalidação de cache para atualizar a lista automaticamente
 - [x] `ListaContas` + `CriarContaForm` — validado manualmente: criar conta reflete na lista sem reload
-- [ ] Ações por conta: depositar, sacar, transferir
+- [x] `useDepositar`, `useSacar`, `useTransferir` + `ContaCard` (com ações inline) — validado manualmente: saldos atualizam corretamente após cada operação
+- [x] Extrato (`conta.historico`) exibido no card via botão "Ver extrato" — fecha o requisito original de consulta de extrato

@@ -56,7 +56,9 @@ Cliente é criado junto com a conta (sem CRUD próprio).
 
 ### 2.4 Diagrama de classes
 
-Mantido no draw.io (mesmo conteúdo: entidades, herança, composição e as 3 interfaces — `Transacionavel`, `Tributavel`, `ContaRepository`).
+![Diagrama de classes](docs/Sistema-bancário.drawio.png)
+
+Fonte editável: [`docs/Sistema-bancário.drawio`](docs/Sistema-bancário.drawio) (abrir em [app.diagrams.net](https://app.diagrams.net) ou na extensão draw.io do VS Code)
 
 ### 2.5 Hierarquias e interfaces
 

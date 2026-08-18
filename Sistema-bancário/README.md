@@ -152,3 +152,4 @@ Aplicação disponível em `http://localhost:8081`.
 - [x] `ListaContas` + `CriarContaForm` — validado manualmente: criar conta reflete na lista sem reload
 - [x] `useDepositar`, `useSacar`, `useTransferir` + `ContaCard` (com ações inline) — validado manualmente: saldos atualizam corretamente após cada operação
 - [x] Extrato (`conta.historico`) exibido no card via botão "Ver extrato" — fecha o requisito original de consulta de extrato
+- [x] Tema claro/escuro automático via `prefers-color-scheme` (classes `dark:` do Tailwind, paleta `neutral` no modo escuro) — segue a preferência do sistema/navegador, sem botão manual

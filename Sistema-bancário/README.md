@@ -18,6 +18,25 @@ Sistema bancário full-stack (backend Java/Spring Boot + frontend React) constru
 | UI | Tailwind CSS | Estilização utilitária, com suporte nativo a dark mode |
 | Dados | TanStack Query | Cache e sincronização automática após criar/depositar/sacar/transferir |
 
+## Estrutura
+- `pom.xml` + `src/`: backend Spring Boot (`model`, `repository`, `service`, `controller`, `dto`, `exception`)
+- `frontend/`: SPA React + TypeScript (`api`, `hooks`, `components`)
+
+## Pré-requisitos
+- [Java 21 (JDK)](https://adoptium.net/)
+- [Node.js](https://nodejs.org/) e npm
+
+## Como rodar localmente
+
+Na raiz do projeto (`Sistema-bancário/`):
+
+```bash
+npm install
+npm run dev
+```
+
+Isso sobe o backend (Spring Boot, porta `8081`) e o frontend (Vite, porta `5173`) juntos, via `concurrently`. Acesse `http://localhost:5173`.
+
 ## Documentação de desenvolvimento
 
 Este projeto foi construído seguindo um processo estruturado, documentado em [CHECKLIST.md](CHECKLIST.md). Os detalhes completos de requisitos, modelagem, implementação, testes e refatoração estão registrados abaixo.

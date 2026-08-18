@@ -11,14 +11,11 @@ public class ContaPoupanca extends Conta {
 
     @Override
     public void sacar(double valor) throws SaldoInsuficienteException {
-        if (valor <= 0) {
-            throw new IllegalArgumentException("Valor de saque deve ser positivo");
-        }
+        validarValorPositivo(valor);
         if (valor > saldo) {
             throw new SaldoInsuficienteException("Poupança não permite saldo negativo");
         }
-        saldo -= valor;
-        historico.add(new Transacao(TipoTransacao.SAQUE, valor));
+        registrarSaque(valor);
     }
 
     public void renderJuros() {

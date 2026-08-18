@@ -12,15 +12,12 @@ public class ContaCorrente extends Conta implements Tributavel {
 
     @Override
     public void sacar(double valor) throws SaldoInsuficienteException {
-        if (valor <= 0) {
-            throw new IllegalArgumentException("Valor de saque deve ser positivo");
-        }
+        validarValorPositivo(valor);
         if (saldo - valor < -LIMITE_CHEQUE_ESPECIAL) {
             throw new SaldoInsuficienteException(
                 "Saldo insuficiente mesmo considerando cheque especial");
         }
-        saldo -= valor;
-        historico.add(new Transacao(TipoTransacao.SAQUE, valor));
+        registrarSaque(valor);
     }
 
     @Override

@@ -37,4 +37,4 @@
 
 ## 7. Refatoração/revisão
 
-- [ ] Revisar nomes, remover duplicação, checar responsabilidades de cada classe
+- [x] Revisar nomes, remover duplicação, checar responsabilidades de cada classe — extraída validação duplicada (`validarValorPositivo`) e lógica de saque duplicada (`registrarSaque`) para `Conta`

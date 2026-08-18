@@ -23,11 +23,20 @@ public abstract class Conta implements Transacionavel {
 
     @Override
     public void depositar(double valor) {
-        if (valor <= 0) {
-            throw new IllegalArgumentException("Valor de depósito deve ser positivo");
-        }
+        validarValorPositivo(valor);
         saldo += valor;
         historico.add(new Transacao(TipoTransacao.DEPOSITO, valor));
+    }
+
+    protected void validarValorPositivo(double valor) {
+        if (valor <= 0) {
+            throw new IllegalArgumentException("Valor deve ser positivo");
+        }
+    }
+
+    protected void registrarSaque(double valor) {
+        saldo -= valor;
+        historico.add(new Transacao(TipoTransacao.SAQUE, valor));
     }
 
     // cada subclasse decide a regra de saque — é aqui que entra o polimorfismo

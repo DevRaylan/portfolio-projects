@@ -1,6 +1,26 @@
-# Documentação — Sistema Bancário (POO)
+# Sistema Bancário
 
-Documento vivo: vai sendo preenchido conforme cada etapa do [CHECKLIST.md](CHECKLIST.md) é fechada.
+Sistema bancário full-stack (backend Java/Spring Boot + frontend React) construído para praticar todos os pilares da Programação Orientada a Objetos: encapsulamento, herança, polimorfismo, interfaces e composição.
+
+## Funcionalidades
+- Criar conta corrente ou poupança
+- Depósito, saque e transferência entre contas
+- Extrato de transações
+- Tema claro/escuro automático, seguindo a preferência do sistema
+
+## Tecnologias
+
+| Camada | Tecnologia | Por quê |
+| --- | --- | --- |
+| Backend | Java 21 + Spring Boot | Framework padrão de mercado para APIs REST em Java |
+| Persistência | Repository em memória (ConcurrentHashMap) | Foco em POO, sem complexidade extra de banco de dados |
+| Frontend | React + TypeScript + Vite | Build rápido e tipagem estática |
+| UI | Tailwind CSS | Estilização utilitária, com suporte nativo a dark mode |
+| Dados | TanStack Query | Cache e sincronização automática após criar/depositar/sacar/transferir |
+
+## Documentação de desenvolvimento
+
+Este projeto foi construído seguindo um processo estruturado, documentado em [CHECKLIST.md](CHECKLIST.md). Os detalhes completos de requisitos, modelagem, implementação, testes e refatoração estão registrados abaixo.
 
 ## 1. Requisitos
 

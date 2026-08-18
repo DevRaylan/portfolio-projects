@@ -138,4 +138,16 @@ Aplicação disponível em `http://localhost:8081`.
 - CORS precisa ser habilitado no backend, já que o frontend roda em porta/origem diferente durante o desenvolvimento
 
 ### 8.2 Telas
-_(a definir)_
+- Dashboard único: lista de contas + formulário de criação no topo
+- Ações por conta (depositar, sacar, transferir) — próxima etapa
+
+### 8.3 Rodando o sistema completo
+- `npm run dev` na raiz do projeto (`Sistema-bancário/`) sobe backend (Maven) e frontend (Vite) juntos via `concurrently`
+- Frontend: `http://localhost:5173` · Backend: `http://localhost:8081`
+
+### 8.4 Implementação
+- [x] `contaApi` (`frontend/src/api/`) — cliente HTTP centralizado, único ponto que conhece a URL da API
+- [x] `useContas` — hook de leitura (`useQuery`) para listar contas
+- [x] `useCriarConta` — hook de escrita (`useMutation`) com invalidação de cache para atualizar a lista automaticamente
+- [x] `ListaContas` + `CriarContaForm` — validado manualmente: criar conta reflete na lista sem reload
+- [ ] Ações por conta: depositar, sacar, transferir
